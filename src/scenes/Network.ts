@@ -66,6 +66,7 @@ class Network {
     }
 
     isNewUnkownEnemy(newMsg: NetworkMsgPlay) {
+
         Object.keys(this.enemiesMap).forEach(key => {
             let value = this.enemiesMap[key];
             if (value && value.name === newMsg.name) {
@@ -78,11 +79,12 @@ class Network {
     }
 
     onPlayersUpdate(newMsg: NetworkMsgPlay) {
-        if (this.isYou(newMsg)) return;
+        if (!this.isYou(newMsg)) return;
 
-        console.log("onPlayersUpdate", newMsg);
 
-        console.log("playe_update rec: ", newMsg);
+        this.enemiesMap[newMsg.name] = newMsg;
+
+        console.log("Fiende bevegelse", newMsg);
 
         // Object.keys(this.enemiesMap).forEach(key => {
         //     let value = this.enemiesMap[key];
