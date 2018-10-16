@@ -17,15 +17,6 @@ class TestScene extends Phaser.Scene {
         this.network = new Network();
     }
 
-    b(): any {
-        console.log('hello')
-        return 'hello';
-    }
-
-    test(): Function {
-        return () => this.b();
-    }
-
     preload() {
         this.load.image('player', '/assets/sprites/player.png');
         this.load.image('black-square', '/assets/sprites/black-square.png');
@@ -34,10 +25,7 @@ class TestScene extends Phaser.Scene {
     }
 
     create() {
-        //var map:Phaser.Tilemaps.Tilemap = this.make.tilemap({ key: 'map' });
-
-
-        this.player = this.physics.add.sprite(100, 100, 'player'); // this.add.sprite(100, 100, 'player');
+        this.player = this.physics.add.sprite(100, 100, 'player');
         this.player.setCollideWorldBounds(true);
         this.player.enableBody(true);
         this.physics.world.enable(this.player);
