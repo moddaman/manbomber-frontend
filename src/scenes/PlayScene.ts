@@ -1,19 +1,20 @@
 import Network from './Network';
+import { Manbomber } from "../objects/Manbomber";
 
 
 class TestScene extends Phaser.Scene {
-    player: any;
+    private player: Manbomber;
     squares: any;
     cursors: any;
-    bomb: Phaser.GameObjects.Sprite;
+    bombs: any;
     network: Network;
     enemies: Phaser.GameObjects.Sprite[];
+    bombCounter: number;
 
     constructor() {
         super({
             key: 'TestScene'
         });
-
         this.network = new Network();
     }
 
@@ -21,15 +22,16 @@ class TestScene extends Phaser.Scene {
         this.load.image('player', '/assets/sprites/player.png');
         this.load.image('black-square', '/assets/sprites/black-square.png');
         this.load.image('bomb', '/assets/sprites/bomb.png');
-
     }
 
     create() {
-        this.player = this.physics.add.sprite(100, 100, 'player');
-        this.player.setCollideWorldBounds(true);
-        this.player.enableBody(true);
-        this.physics.world.enable(this.player);
 
+        this.player = new Manbomber({
+            scene: this,
+            x: 100,
+            y: 100,
+            key: "player"
+          });
         this.cursors = this.input.keyboard.createCursorKeys();
         this.squares = this.physics.add.staticGroup();
         for (var i = 70; i < 400; i += 80) {
@@ -37,10 +39,11 @@ class TestScene extends Phaser.Scene {
                 this.squares.create(j, i, 'black-square');
             }
         }
-
-        this.bomb = this.add.sprite(100, 100, 'bomb');
-        this.bomb.visible = false;
-
+        this.bombs = this.physics.add.staticGroup();
+        
+        //this.bomb = this.add.sprite(100, 100, 'bomb');
+        //this.bomb.visible = false;
+        this.bombCounter = 0;
         this.enemies = [];
         for (let i = 0; i < 10; i++) {
             this.enemies[i] = this.add.sprite(0, 0, 'player');
@@ -51,7 +54,6 @@ class TestScene extends Phaser.Scene {
 
     update(time: number, delta: number) {
         this.physics.add.collider(this.player, this.squares);
-
         this.network.update(time, this.player, this.enemies);
 
         if (this.cursors.left.isDown) {
@@ -66,12 +68,14 @@ class TestScene extends Phaser.Scene {
         if (this.cursors.up.isDown) {
             this.player.y -= 5;
         }
-
-        if (this.cursors.space.isDown) {
-            this.bomb.visible = true;
-            this.bomb.x = this.player.x;
-            this.bomb.y = this.player.y;
-            console.log('DROP BOMB');
+        this.player.update();
+        if (this.cursors.space.justDown) {
+            if(this.player.canUseBomb()){
+                this.bombs.create(this.player.x, this.player.y, 'bomb');
+                console.log('DROP BOMB');
+                this.player.useBomb()
+            }
+            
         }
     }
 }
