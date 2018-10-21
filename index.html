@@ -53,10 +53,6 @@
     }
   </style>
 
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
-  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-
 </head>
 
 <body>
@@ -66,26 +62,13 @@
   <h2>Chat</h2>
   <ul id="messages">
   </ul>
-  <form id="chat-form" class="chat-form" name="chat-form">
+  <form id="chat-form" class="chat-form" name="chat-form" onsubmit="return onSubmitForm()">
     <input id="m" autocomplete="off">
     <button type="submit">Send</button>
   </form>
 </div>
 
 
-<script>
-  $(function () {
-    var socket = io('https://manbomber.herokuapp.com');
-    $('form').submit(function () {
-      socket.emit('chat message', $('#m').val());
-      $('#m').val('');
-      return false;
-    });
-    socket.on('chat message', function (msg) {
-      console.log('recieved', msg);
-      $('#messages').append($('<li>').text(msg));
-    });
-  });
-</script>
+
 <script type="text/javascript" src="./dist/vendor.bundle.js"></script><script type="text/javascript" src="./dist/bundle.js"></script></body>
 </html>
