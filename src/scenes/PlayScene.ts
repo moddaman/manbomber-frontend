@@ -72,9 +72,9 @@ class TestScene extends Phaser.Scene {
     }
 
     this.player.update();
-    if (this.cursors.space.justDown) {
+    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+      console.log(this.player.canUseBomb());
       if (this.player.canUseBomb()) {
-        debugger;
         this.bombs.create(this.player.x, this.player.y, 'bomb');
         console.log('DROP BOMB');
         this.player.useBomb()
