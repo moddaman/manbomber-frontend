@@ -4,11 +4,9 @@ import { Manbomber } from "../objects/Manbomber";
 class TestScene extends Phaser.Scene {
   private player: Manbomber;
   squares: any;
-  cursors: any;
   bomb: Phaser.GameObjects.Sprite;
   network: Network;
   enemies: Phaser.GameObjects.Sprite[];
-  spacebar: any;
   bombs: any;
   bombCounter: number;
 
@@ -34,8 +32,6 @@ class TestScene extends Phaser.Scene {
       key: "player"
     });
 
-    this.cursors = this.input.keyboard.createCursorKeys();
-    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     this.squares = this.physics.add.staticGroup();
     for (var i = 70; i < 400; i += 80) {
@@ -58,29 +54,16 @@ class TestScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.squares);
     this.network.update(time, this.player, this.enemies);
 
-    if (this.cursors.left.isDown) {
-      this.player.x -= 5;
-    }
-    if (this.cursors.right.isDown) {
-      this.player.x += 5;
-    }
-    if (this.cursors.down.isDown) {
-      this.player.y += 5;
-    }
-    if (this.cursors.up.isDown) {
-      this.player.y -= 5;
-    }
-
     this.player.update();
-    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-      console.log(this.player.canUseBomb());
-      if (this.player.canUseBomb()) {
-        this.bombs.create(this.player.x, this.player.y, 'bomb');
-        console.log('DROP BOMB');
-        this.player.useBomb()
-      }
+    // if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+    //   console.log(this.player.canUseBomb());
+    //   if (this.player.canUseBomb()) {
+    //     this.bombs.create(this.player.x, this.player.y, 'bomb');
+    //     console.log('DROP BOMB');
+    //     this.player.useBomb()
+    //   }
 
-    }
+    // }
   }
 }
 
