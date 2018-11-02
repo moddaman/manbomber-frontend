@@ -1,5 +1,6 @@
 import Network from './Network';
-import { Manbomber } from "../objects/Manbomber";
+import {Manbomber} from "../objects/Manbomber";
+import {Bomb} from '../objects/Bomb';
 
 class TestScene extends Phaser.Scene {
   private player: Manbomber;
@@ -7,7 +8,7 @@ class TestScene extends Phaser.Scene {
   bomb: Phaser.GameObjects.Sprite;
   network: Network;
   enemies: Phaser.GameObjects.Sprite[];
-  bombs: any;
+  bombs: Bomb[];
   bombCounter: number;
 
   constructor() {
@@ -25,13 +26,26 @@ class TestScene extends Phaser.Scene {
   }
 
   create() {
+    this.bombs = [];
+    for (let i = 0; i < 5; i++) {
+      this.bombs.push(new Bomb({
+        scene: this,
+        x: -100,
+        y: -100,
+        key: "bomb"
+      }));
+    }
+
     this.player = new Manbomber({
       scene: this,
       x: 100,
       y: 100,
       key: "player"
     });
+    this.player.setBombs(this.bombs);
 
+
+    console.log('creare play scene');
 
     this.squares = this.physics.add.staticGroup();
     for (var i = 70; i < 400; i += 80) {
@@ -39,7 +53,7 @@ class TestScene extends Phaser.Scene {
         this.squares.create(j, i, 'black-square');
       }
     }
-    this.bombs = this.physics.add.staticGroup();
+    // this.bombs = this.physics.add.staticGroup();
     this.bombCounter = 0;
     this.enemies = [];
     for (let i = 0; i < 10; i++) {
@@ -54,7 +68,7 @@ class TestScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.squares);
     this.network.update(time, this.player, this.enemies);
 
-    this.player.update();
+    this.player.update(time);
     // if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
     //   console.log(this.player.canUseBomb());
     //   if (this.player.canUseBomb()) {

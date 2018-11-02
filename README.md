@@ -1,7 +1,14 @@
-# Phaser 3 Typescript Webpack Boilerplate
-![screenshot](https://i.imgur.com/XXyX8KO.png)
-![screenshot](https://i.imgur.com/YuzMdYi.png)
-![screenshot](https://i.imgur.com/GIdIa5q.png)
+# Manbomber
+
+
+
+## Milepæler
+1. Bomber må sprenge og drepe
+2. Du må kunne dø og spawne
+3. Startskjerm ?
+
+
+
 
 # Setup
 You’ll need to install a few things before you have a working copy of the project.
