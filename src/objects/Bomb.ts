@@ -1,5 +1,6 @@
 export class Bomb extends Phaser.GameObjects.Sprite {
   time: any;
+  exploded:boolean;
 
 
   constructor(params) {
@@ -15,6 +16,7 @@ export class Bomb extends Phaser.GameObjects.Sprite {
     console.log('use bomb');
     this.x = x;
     this.y = y;
+
     this.time.addEvent({
       delay: 2000,
       callback: () => this.explode(),
@@ -26,6 +28,7 @@ export class Bomb extends Phaser.GameObjects.Sprite {
 
   explode() {
     console.log('exlode');
+    this.exploded=true;
     this.x = -100;
     this.y = -100;
   }

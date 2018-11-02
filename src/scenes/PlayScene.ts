@@ -66,9 +66,9 @@ class TestScene extends Phaser.Scene {
 
   update(time: number, delta: number) {
     this.physics.add.collider(this.player, this.squares);
-    this.network.update(time, this.player, this.enemies);
+    this.network.update(time, this.player, this.enemies,this.bombs[0]);
 
-    this.player.update(time);
+    this.player.update(time,);
     // if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
     //   console.log(this.player.canUseBomb());
     //   if (this.player.canUseBomb()) {

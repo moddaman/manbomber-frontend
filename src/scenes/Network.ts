@@ -1,10 +1,16 @@
 import {getUrlParam, PLAYER_UPDATE_KEY, socket} from '../network/socket'
+import {Bomb} from '../objects/Bomb';
 
 
 interface NetworkMsgPlay {
   name: string;
   x: number;
   y: number;
+  bomb?: {
+    x: number;
+    y: number;
+    exploded: boolean;
+  }
 }
 
 const randomName = () => {
@@ -90,7 +96,7 @@ class Network {
 
   }
 
-  update(time: number, player: Phaser.GameObjects.Sprite, enemies: Phaser.GameObjects.Sprite[]) {
+  update(time: number, player: Phaser.GameObjects.Sprite, enemies: Phaser.GameObjects.Sprite[], bomb: Bomb) {
     this.networkCount++;
 
     if (this.networkCount % 1 === 0) {
@@ -101,7 +107,12 @@ class Network {
         const myPos: NetworkMsgPlay = {
           name: this.lastPlayerMsg.name,
           x: player.x,
-          y: player.y
+          y: player.y,
+          bomb: {
+            x: bomb.x,
+            y: bomb.y,
+            exploded: bomb.exploded
+          }
         };
         this.lastPlayerMsg = myPos;
         socket.emit(PLAYER_UPDATE_KEY, myPos);
