@@ -43,34 +43,30 @@ class TestScene extends Phaser.Scene {
       key: "player"
     });
     this.player.setBombs(this.bombs);
-
-
-    console.log('creare play scene');
+    this.player.physicsBodyType = Phaser.Physics.ARCADE;
+    this.player.body.collideWorldBounds=true;
 
     this.squares = this.physics.add.staticGroup();
     for (var i = 70; i < 400; i += 80) {
       for (var j = 80; j < 600; j += 80) {
         this.squares.create(j, i, 'black-square');
+        this.squares.enableBody = true;
+
       }
     }
+
     this.bombCounter = 0;
     this.enemies = [];
     for (let i = 0; i < 10; i++) {
       this.enemies[i] = this.add.sprite(0, 0, 'player');
       this.enemies[i].visible = false;
-
     }
-
   }
   
-  
-
   update(time: number, delta: number) {
-    this.physics.add.collider(this.player, this.squares);
+    this.physics.add.collider(this.player, this.squares); // denne burde fungere, men det gjør den ikke
     this.network.update(time, this.player, this.enemies,this.bombs[0]);
-
     this.player.update(time);
-
   }
 }
 
