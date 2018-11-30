@@ -53,7 +53,6 @@ class TestScene extends Phaser.Scene {
         this.squares.create(j, i, 'black-square');
       }
     }
-    // this.bombs = this.physics.add.staticGroup();
     this.bombCounter = 0;
     this.enemies = [];
     for (let i = 0; i < 10; i++) {
@@ -63,21 +62,15 @@ class TestScene extends Phaser.Scene {
     }
 
   }
+  
+  
 
   update(time: number, delta: number) {
     this.physics.add.collider(this.player, this.squares);
     this.network.update(time, this.player, this.enemies,this.bombs[0]);
 
-    this.player.update(time,);
-    // if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-    //   console.log(this.player.canUseBomb());
-    //   if (this.player.canUseBomb()) {
-    //     this.bombs.create(this.player.x, this.player.y, 'bomb');
-    //     console.log('DROP BOMB');
-    //     this.player.useBomb()
-    //   }
+    this.player.update(time);
 
-    // }
   }
 }
 

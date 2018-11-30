@@ -116,7 +116,7 @@ class Network {
         };
         this.lastPlayerMsg = myPos;
         socket.emit(PLAYER_UPDATE_KEY, myPos);
-        console.log('sender ny socket siden endring', myPos);
+        //console.log('sender ny socket siden endring', myPos);
       }
 
     }

@@ -12,13 +12,11 @@ export class Bomb extends Phaser.GameObjects.Sprite {
   }
 
 
-  use(x: number, y: number, time: number) {
-    console.log('use bomb');
+  use(x: number, y: number, timeToExplode: number) {
     this.x = x;
     this.y = y;
-
     this.time.addEvent({
-      delay: 2000,
+      delay: timeToExplode,
       callback: () => this.explode(),
       callbackScope: this
     })

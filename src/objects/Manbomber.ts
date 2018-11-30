@@ -1,11 +1,14 @@
 import {Bomb} from "../objects/Bomb";
 
 export class Manbomber extends Phaser.GameObjects.Sprite {
-  numberOfBombs: number = 5;
+  usedBombs: number = 0;
+  maxBombs: number = 5;
+  explodeTime: number = 2000;
   cursors: any;
   spacebar: any;
   bombs: Bomb[];
   bombCounter: number;
+  time: any;
 
 
   constructor(params) {
@@ -16,6 +19,8 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
     this.spacebar = params.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     // this.bombs = params.scene.physics.add.staticGroup();
     this.bombCounter = 0;
+    this.time = params.scene.time;
+
     params.scene.add.existing(this);
 
 
@@ -25,13 +30,26 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
     this.bombs = bombs;
   }
 
-  canUseBomb() {
-    return this.numberOfBombs > 0;
+  getNewBomb () {
+    console.log('Player got new bomb');
+    this.usedBombs -= 1;
   }
 
-  useBomb() {
-    this.numberOfBombs -= 1;
+  tryUseBomb(x:any, y:any) {
+    if(this.usedBombs < this.maxBombs) {
+      this.bombs[this.usedBombs].use(x, y, this.explodeTime);
+      this.usedBombs += 1;
+      this.time.addEvent({
+        delay: this.explodeTime,
+        callback: () => this.getNewBomb(),
+        callbackScope: this
+      })
+    }
   }
+
+  // useBomb() {
+    
+  // }
 
   update(time: number) {
     if (this.cursors.left.isDown) {
@@ -46,22 +64,13 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
     if (this.cursors.up.isDown) {
       this.y -= 5;
     }
-
-
     // this.bombs.forEach(bomb => {
     //   bomb.update();
     // });
-    this.bombs[0].update(time);
-
+    //this.bombs[0].update(time);
 
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
-      console.log(this.canUseBomb());
-      if (this.canUseBomb()) {
-
-
-        this.bombs[0].use(this.x, this.y, time);
-        // this.useBomb()
-      }
+      this.tryUseBomb(this.x, this.y);
     }
   }
 }
