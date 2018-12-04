@@ -50,7 +50,13 @@ class TestScene extends Phaser.Scene {
   update(time: number, delta: number) {
     this.physics.add.collider(this.player, this.squares); // denne burde fungere, men det gjør den ikke
     this.network.update(time, this.player);
-    this.player.update(time);
+    const x = this.bombs[0].getExplotionRadius();
+    var t = this.bombs.filter(b => {
+      return b.hasExploded();
+    }).map(e => {
+      return e.getExplotionRadius();
+    })
+    this.player.update(time, t);
   }
 }
 
