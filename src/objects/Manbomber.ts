@@ -1,5 +1,5 @@
 import {Bomb} from "../objects/Bomb";
-import { ExplotionRadius } from '../types'
+import {ExplotionRadius} from '../types'
 import Network from "../scenes/Network";
 
 export class Manbomber extends Phaser.GameObjects.Sprite {
@@ -52,7 +52,7 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
         callbackScope: this
       });
 
-      if(this.network){
+      if (this.network) {
         // Only player has network. not enemies
         this.network.sendDroppedBomb(x, y);
       }
@@ -60,19 +60,19 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
     }
   }
 
-  isInRadius(x:number, y:number, explosionRadius: ExplotionRadius) {
-    return (Math.abs(x-explosionRadius.x) < 100  && Math.abs(y - explosionRadius.y) < 15)   ||
+  isInRadius(x: number, y: number, explosionRadius: ExplotionRadius) {
+    return (Math.abs(x - explosionRadius.x) < 100 && Math.abs(y - explosionRadius.y) < 15) ||
       (Math.abs(y - explosionRadius.y) < 100 && Math.abs(x - explosionRadius.x) < 15)
   }
 
-  isDead(x:number, y:number, explosionRadiuses: Array<ExplotionRadius>) {
+  isDead(x: number, y: number, explosionRadiuses: Array<ExplotionRadius>) {
     return (explosionRadiuses !== undefined && explosionRadiuses.length > 0) && explosionRadiuses.some(e => {
       return this.isInRadius(this.x, this.y, e);
     })
   }
 
 
-  update(time: number, explosionRadiuses: Array<ExplotionRadius> ) {
+  update(time: number) {
     if (this.cursors.left.isDown) {
       this.x -= 5;
     }
@@ -85,9 +85,14 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
     if (this.cursors.up.isDown) {
       this.y -= 5;
     }
-    if(this.isDead(this.x, this.y, explosionRadiuses)) {
-        console.log('YOU DEAD');
-      }
+
+    const exlodedBoms = this.bombs
+      .filter(b => b.hasExploded())
+      .map(e => e.getExplotionRadius());
+
+    if (this.isDead(this.x, this.y, exlodedBoms)) {
+      console.log('YOU DEAD');
+    }
 
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
       this.tryUseBomb(this.x, this.y);
