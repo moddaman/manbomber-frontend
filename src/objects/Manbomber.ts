@@ -71,25 +71,23 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
     })
   }
 
+  
 
   update(time: number) {
+    this.setVelocityY(0)
+    this.setVelocityX(0)
     if (this.cursors.left.isDown) {
       this.setVelocityX(-150)
     }
-    else if (this.cursors.right.isDown) {
+    if (this.cursors.right.isDown) {
       this.setVelocityX(150)
     }
-    else if (this.cursors.down.isDown) {
+    if (this.cursors.down.isDown) {
       this.setVelocityY(150)
     }
-    else if (this.cursors.up.isDown) {
+    if (this.cursors.up.isDown) {
       this.setVelocityY(-150)
     } 
-    else {
-      this.setVelocityY(0)
-      this.setVelocityX(0)
-
-    }
 
     const exlodedBoms = this.bombs
       .filter(b => b.hasExploded())

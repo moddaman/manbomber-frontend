@@ -36,8 +36,8 @@ class TestScene extends Phaser.Scene {
 
 
     this.squares = this.physics.add.staticGroup();
-    for (var i = 70; i < 400; i += 80) {
-      for (var j = 80; j < 600; j += 80) {
+    for (var i = 50; i < 470; i += 70) {
+      for (var j = 50; j < 610; j += 70) {
         this.squares.create(j, i, 'black-square');
         this.squares.enableBody = true;
       }

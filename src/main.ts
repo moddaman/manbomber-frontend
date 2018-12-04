@@ -16,8 +16,8 @@ if (!player) {
   const config: GameConfig = {
     type: Phaser.AUTO,
     parent: 'content',
-    width: 640,
-    height: 480,
+    width: 600,
+    height: 450,
     resolution: 1,
     backgroundColor: "#EDEEC9",
     physics: {
