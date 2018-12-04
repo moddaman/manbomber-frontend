@@ -32,8 +32,8 @@ class TestScene extends Phaser.Scene {
       y: 100,
       key: "player"
     }, this.network);
-    this.player.physicsBodyType = Phaser.Physics.ARCADE;
-    this.player.body.collideWorldBounds = true;
+    this.player.setCollideWorldBounds(true);
+
 
     this.squares = this.physics.add.staticGroup();
     for (var i = 70; i < 400; i += 80) {
@@ -42,6 +42,7 @@ class TestScene extends Phaser.Scene {
         this.squares.enableBody = true;
       }
     }
+    this.physics.add.collider(this.player, this.squares);
 
     this.bombCounter = 0;
 
