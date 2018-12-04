@@ -2,7 +2,7 @@ import {Bomb} from "../objects/Bomb";
 import {ExplotionRadius} from '../types'
 import Network from "../scenes/Network";
 
-export class Manbomber extends Phaser.GameObjects.Sprite {
+export class Manbomber extends Phaser.Physics.Arcade.Sprite {
   usedBombs: number = 0;
   maxBombs: number = 5;
   explodeTime: number = 2000;
@@ -74,16 +74,16 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
 
   update(time: number) {
     if (this.cursors.left.isDown) {
-      this.x -= 5;
+      this.setVelocityX(-5)
     }
     if (this.cursors.right.isDown) {
-      this.x += 5;
+      this.setVelocityX(5)
     }
     if (this.cursors.down.isDown) {
-      this.y += 5;
+      this.setVelocityY(5)
     }
     if (this.cursors.up.isDown) {
-      this.y -= 5;
+      this.setVelocityY(-5)
     }
 
     const exlodedBoms = this.bombs
