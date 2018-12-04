@@ -1,5 +1,6 @@
-import {getUrlParam, PLAYER_UPDATE_KEY, socket} from '../network/socket'
-import {Bomb} from '../objects/Bomb';
+import {BOMB_UPDATE_KEY, getUrlParam, PLAYER_UPDATE_KEY, socket} from '../network/socket';
+import {Manbomber} from "../objects/Manbomber";
+import Scene = Phaser.Scene;
 
 
 interface NetworkMsgPlay {
@@ -13,26 +14,38 @@ interface NetworkMsgPlay {
   }
 }
 
+interface NetworkMsgBomb {
+  name: string;
+  x: number;
+  y: number;
+}
+
 const randomName = () => {
   return 'oystein' + Math.round(Math.random() * 100);
 };
 
 
+export interface ManbomberNameMap {
+  [name: string]: Manbomber
+}
+
 class Network {
   networkCount: number;
   lastPlayerMsg: NetworkMsgPlay;
+  enemiesMap: ManbomberNameMap;
 
-  currentEnemyPlayerMsg: NetworkMsgPlay;
-  enemiesMap: {
-    [id: number]: NetworkMsgPlay
-  };
+  scene: Scene;
 
-
-  constructor() {
-
+  constructor(scene: Scene, enemiesMap: ManbomberNameMap) {
+    this.scene = scene;
+    this.enemiesMap = enemiesMap;
     socket.on(PLAYER_UPDATE_KEY, (data) => {
       this.onPlayersUpdate(data);
     });
+    socket.on(BOMB_UPDATE_KEY, (data) => {
+      this.onBombUpdate(data);
+    });
+
     this.networkCount = 0;
 
     this.lastPlayerMsg = {
@@ -41,12 +54,6 @@ class Network {
       y: 0
     };
     console.log('name', this.lastPlayerMsg.name);
-
-    this.currentEnemyPlayerMsg = {
-      name: 'inge her',
-      x: 0, y: 0
-    };
-    this.enemiesMap = {};
   }
 
 
@@ -59,83 +66,71 @@ class Network {
     return newMsg.name != this.lastPlayerMsg.name
   }
 
-  getIdForArraySpriteOrUndefined() {
-
-  }
-
-  isNewUnkownEnemy(newMsg: NetworkMsgPlay) {
-
-    Object.keys(this.enemiesMap).forEach(key => {
-      let value = this.enemiesMap[key];
-      if (value && value.name === newMsg.name) {
-        return true;
-      }
-
-    });
-
-    return newMsg.name != this.lastPlayerMsg.name
-  }
-
   onPlayersUpdate(newMsg: NetworkMsgPlay) {
     if (!this.isYou(newMsg)) return;
 
+    let foundEnemy = this.enemiesMap[newMsg.name];
+    if (!foundEnemy) {
+      // Lag ny enemy
+      this.enemiesMap[newMsg.name] = new Manbomber({
+        scene: this.scene,
+        x: -100,
+        y: -100,
+        key: "player"
+      });
+      foundEnemy = this.enemiesMap[newMsg.name];
+    }
+    // Oppdater enemy posisjon
+    foundEnemy.x = newMsg.x;
+    foundEnemy.y = newMsg.y;
 
-    this.enemiesMap[newMsg.name] = newMsg;
 
     console.log("Fiende bevegelse", newMsg);
-
-    // Object.keys(this.enemiesMap).forEach(key => {
-    //     let value = this.enemiesMap[key];
-    //
-    //
-    // });
-
-
-    this.currentEnemyPlayerMsg = newMsg;
 
 
   }
 
-  update(time: number, player: Phaser.GameObjects.Sprite, enemies: Phaser.GameObjects.Sprite[], bomb: Bomb) {
+  onBombUpdate(bombMsg: NetworkMsgBomb) {
+    console.log("ny bombe satt over nett ", bombMsg);
+
+    let enemyDroppingBomb = this.enemiesMap[bombMsg.name];
+    if (enemyDroppingBomb) {
+      enemyDroppingBomb.tryUseBomb(bombMsg.x, bombMsg.y)
+    }
+
+
+  }
+
+  sendDroppedBomb(x: number, y: number) {
+    const msg: NetworkMsgBomb = {x, y, name: this.lastPlayerMsg.name};
+    socket.emit(BOMB_UPDATE_KEY, msg)
+  }
+
+  update(
+    time: number,
+    player: Phaser.GameObjects.Sprite,
+  ) {
     this.networkCount++;
 
     if (this.networkCount % 1 === 0) {
-      // console.log('update', time);
 
       if (this.lastPlayerMsg.x != player.x || this.lastPlayerMsg.y != player.y) {
 
         const myPos: NetworkMsgPlay = {
           name: this.lastPlayerMsg.name,
           x: player.x,
-          y: player.y,
-          bomb: {
-            x: bomb.x,
-            y: bomb.y,
-            exploded: bomb.exploded
-          }
+          y: player.y
         };
         this.lastPlayerMsg = myPos;
         socket.emit(PLAYER_UPDATE_KEY, myPos);
-        //console.log('sender ny socket siden endring', myPos);
       }
 
     }
 
-    for (var i = 0; i < enemies.length; i++) {
-      const enemySprite = enemies[i];
-      let eMap = this.enemiesMap[i];
-      if (eMap) {
-        enemySprite.visible = true;
-        enemySprite.x = eMap.x;
-        enemySprite.y = eMap.y;
-      }
-    }
 
-    //enemy.x = this.currentEnemyPlayerMsg.x;
-    //enemy.y = this.currentEnemyPlayerMsg.y;
-
-    //
   }
+
+
 }
 
 export default Network;

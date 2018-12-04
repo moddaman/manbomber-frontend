@@ -19,4 +19,4 @@ export {socket};
 
 export const SOCKET_CHAT_KEY = 'chat message';
 export const PLAYER_UPDATE_KEY = "player_update";
-
+export const BOMB_UPDATE_KEY = "bomb_update";

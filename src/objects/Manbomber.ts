@@ -1,4 +1,5 @@
 import {Bomb} from "../objects/Bomb";
+import Network from "../scenes/Network";
 
 export class Manbomber extends Phaser.GameObjects.Sprite {
   usedBombs: number = 0;
@@ -9,9 +10,9 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
   bombs: Bomb[];
   bombCounter: number;
   time: any;
+  network?: Network;
 
-
-  constructor(params) {
+  constructor(params, network?: Network) {
     super(params.scene, params.x, params.y, params.key, params.frame);
     // this.scene=params.scene;
     params.scene.physics.world.enable(this);
@@ -20,36 +21,46 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
     // this.bombs = params.scene.physics.add.staticGroup();
     this.bombCounter = 0;
     this.time = params.scene.time;
+    this.network = network;
 
     params.scene.add.existing(this);
 
+    this.bombs = [];
+    for (let i = 0; i < 5; i++) {
+      this.bombs.push(new Bomb({
+        scene: params.scene,
+        x: -100,
+        y: -100,
+        key: "bomb"
+      }));
+    }
+
 
   }
 
-  setBombs(bombs) {
-    this.bombs = bombs;
-  }
-
-  getNewBomb () {
+  getNewBomb() {
     console.log('Player got new bomb');
     this.usedBombs -= 1;
   }
 
-  tryUseBomb(x:any, y:any) {
-    if(this.usedBombs < this.maxBombs) {
+  tryUseBomb(x: any, y: any) {
+    if (this.usedBombs < this.maxBombs) {
       this.bombs[this.usedBombs].use(x, y, this.explodeTime);
       this.usedBombs += 1;
       this.time.addEvent({
         delay: this.explodeTime,
         callback: () => this.getNewBomb(),
         callbackScope: this
-      })
+      });
+
+      if(this.network){
+        // Only player has network. not enemies
+        this.network.sendDroppedBomb(x, y);
+      }
+
     }
   }
 
-  // useBomb() {
-    
-  // }
 
   update(time: number) {
     if (this.cursors.left.isDown) {
@@ -64,10 +75,6 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
     if (this.cursors.up.isDown) {
       this.y -= 5;
     }
-    // this.bombs.forEach(bomb => {
-    //   bomb.update();
-    // });
-    //this.bombs[0].update(time);
 
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
       this.tryUseBomb(this.x, this.y);
