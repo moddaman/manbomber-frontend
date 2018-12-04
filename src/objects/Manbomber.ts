@@ -60,19 +60,7 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  isInRadius(x: number, y: number, explosionRadius: ExplotionRadius) {
-    return (Math.abs(x - explosionRadius.x) < 100 && Math.abs(y - explosionRadius.y) < 15) ||
-      (Math.abs(y - explosionRadius.y) < 100 && Math.abs(x - explosionRadius.x) < 15)
-  }
-
-  isDead(x: number, y: number, explosionRadiuses: Array<ExplotionRadius>) {
-    return (explosionRadiuses !== undefined && explosionRadiuses.length > 0) && explosionRadiuses.some(e => {
-      return this.isInRadius(this.x, this.y, e);
-    })
-  }
-
   
-
   update(time: number) {
     this.setVelocityY(0)
     this.setVelocityX(0)
@@ -88,14 +76,6 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
     if (this.cursors.up.isDown) {
       this.setVelocityY(-150)
     } 
-
-    const exlodedBoms = this.bombs
-      .filter(b => b.hasExploded())
-      .map(e => e.getExplotionRadius());
-
-    if (this.isDead(this.x, this.y, exlodedBoms)) {
-      console.log('YOU DEAD');
-    }
 
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
       this.tryUseBomb(this.x, this.y);

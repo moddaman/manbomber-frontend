@@ -1,5 +1,6 @@
 import Network, {ManbomberNameMap} from './Network';
 import {Manbomber} from "../objects/Manbomber";
+import { Fire } from "../objects/Fire";
 
 class TestScene extends Phaser.Scene {
   private player: Manbomber;
@@ -8,6 +9,7 @@ class TestScene extends Phaser.Scene {
   network: Network;
   enemies: ManbomberNameMap;
   bombCounter: number;
+  private fires: Phaser.GameObjects.Group;
 
   constructor() {
     super({
@@ -23,6 +25,8 @@ class TestScene extends Phaser.Scene {
     this.load.image('player', '/assets/sprites/player.png');
     this.load.image('black-square', '/assets/sprites/black-square.png');
     this.load.image('bomb', '/assets/sprites/bomb.png');
+    this.load.image('bullet', '/assets/sprites/purple_ball.png');
+
   }
 
   create() {
@@ -34,6 +38,9 @@ class TestScene extends Phaser.Scene {
     }, this.network);
     this.player.setCollideWorldBounds(true);
 
+    this.fires = this.add.group({
+      runChildUpdate: true
+    });
 
     this.squares = this.physics.add.staticGroup();
     for (var i = 50; i < 470; i += 70) {
@@ -43,9 +50,43 @@ class TestScene extends Phaser.Scene {
       }
     }
     this.physics.add.collider(this.player, this.squares);
+    this.physics.add.overlap(this.player, this.fires, this.killPlayer, null, this);
+
 
     this.bombCounter = 0;
 
+  }
+
+  killPlayer (player, star)
+  {
+    console.log('DØD!!!!')
+  }
+
+  getFire(x, y, xSpeed, ySpeed) {
+    return new Fire({
+      scene: this,
+      x: x,
+      y: y,
+      key: "bullet",
+      fireProperties: {
+        ySpeed: ySpeed,
+        xSpeed: xSpeed
+      }
+    })
+  }
+  public fire(x,y) {
+    this.fires.add(
+      this.getFire(x, y, 100, 0),
+    );
+    this.fires.add(
+      this.getFire(x,y, -100, 0),
+    );
+    this.fires.add(
+      this.getFire(x,y,0, 100),
+    );
+    this.fires.add(
+      this.getFire(x,y,0, -100),
+    );
   }
 
   update(time: number, delta: number) {
