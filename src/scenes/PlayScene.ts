@@ -1,6 +1,6 @@
 import Network, {ManbomberNameMap} from './Network';
 import {Manbomber} from "../objects/Manbomber";
-import { Fire } from "../objects/Fire";
+import {Fire} from "../objects/Fire";
 
 class TestScene extends Phaser.Scene {
   private player: Manbomber;
@@ -61,8 +61,9 @@ class TestScene extends Phaser.Scene {
 
   }
 
-  killPlayer (player, star)
-  {
+  killPlayer(player, star) {
+    player.x = 0;
+    player.y = 0;
     console.log('DØD!!!!')
   }
 
@@ -78,18 +79,19 @@ class TestScene extends Phaser.Scene {
       }
     })
   }
-  public fire(x,y) {
+
+  public fire(x, y) {
     this.fires.add(
       this.getFire(x, y, 100, 0),
     );
     this.fires.add(
-      this.getFire(x,y, -100, 0),
+      this.getFire(x, y, -100, 0),
     );
     this.fires.add(
-      this.getFire(x,y,0, 100),
+      this.getFire(x, y, 0, 100),
     );
     this.fires.add(
-      this.getFire(x,y,0, -100),
+      this.getFire(x, y, 0, -100),
     );
   }
 
