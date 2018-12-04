@@ -20,8 +20,12 @@ class TestScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('player', '/assets/sprites/player.png');
-    this.load.image('black-square', '/assets/sprites/black-square.png');
+    this.load.image('player_0', '/assets/sprites/player_0.png');
+    this.load.image('player_1', '/assets/sprites/player_1.png');
+    this.load.image('player_2', '/assets/sprites/player_2.png');
+    this.load.image('player_3', '/assets/sprites/player_3.png');
+
+    this.load.image('black-square', '/assets/sprites/green-square.png');
     this.load.image('bomb', '/assets/sprites/bomb.png');
   }
 
@@ -30,7 +34,7 @@ class TestScene extends Phaser.Scene {
       scene: this,
       x: 100,
       y: 100,
-      key: "player"
+      key: "player_0"
     }, this.network);
     this.player.setCollideWorldBounds(true);
 

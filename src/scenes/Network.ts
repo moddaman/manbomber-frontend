@@ -69,6 +69,7 @@ class Network {
   onPlayersUpdate(newMsg: NetworkMsgPlay) {
     if (!this.isYou(newMsg)) return;
 
+    const imgId = (1 + Object.keys(this.enemiesMap).length) % 3;
     let foundEnemy = this.enemiesMap[newMsg.name];
     if (!foundEnemy) {
       // Lag ny enemy
@@ -76,7 +77,7 @@ class Network {
         scene: this.scene,
         x: -100,
         y: -100,
-        key: "player"
+        key: "player_" + imgId
       });
       foundEnemy = this.enemiesMap[newMsg.name];
     }

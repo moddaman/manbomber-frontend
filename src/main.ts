@@ -19,7 +19,7 @@ if (!player) {
     width: 600,
     height: 450,
     resolution: 1,
-    backgroundColor: "#EDEEC9",
+    backgroundColor: "#0C6991",
     physics: {
       default: 'arcade',
       arcade: {

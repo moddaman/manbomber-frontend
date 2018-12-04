@@ -95,6 +95,7 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
 
     if (this.isDead(this.x, this.y, exlodedBoms)) {
       console.log('YOU DEAD');
+      //window.alert("Du døde")
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
