@@ -54,16 +54,20 @@ class TestScene extends Phaser.Scene {
       }
     }
     this.physics.add.collider(this.player, this.squares);
+    this.physics.add.collider(this.fires, this.squares, this.killFire);
     this.physics.add.overlap(this.player, this.fires, this.killPlayer, null, this);
-
-
     this.bombCounter = 0;
 
   }
 
-  killPlayer(player, star) {
+  killFire(fire, square) {
+    fire.destroy();
+  }
+
+  killPlayer(player, fire) {
     player.x = 0;
     player.y = 0;
+    fire.destroy()
     console.log('DØD!!!!')
   }
 
