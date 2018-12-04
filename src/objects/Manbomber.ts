@@ -1,4 +1,5 @@
 import {Bomb} from "../objects/Bomb";
+import { ExplotionRadius } from '../types'
 
 export class Manbomber extends Phaser.GameObjects.Sprite {
   usedBombs: number = 0;
@@ -13,11 +14,9 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
 
   constructor(params) {
     super(params.scene, params.x, params.y, params.key, params.frame);
-    // this.scene=params.scene;
     params.scene.physics.world.enable(this);
     this.cursors = params.scene.input.keyboard.createCursorKeys();
     this.spacebar = params.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    // this.bombs = params.scene.physics.add.staticGroup();
     this.bombCounter = 0;
     this.time = params.scene.time;
 
@@ -47,11 +46,19 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
     }
   }
 
-  // useBomb() {
-    
-  // }
+  isInRadius(x:number, y:number, explosionRadius: ExplotionRadius) {
+    return (Math.abs(x-explosionRadius.x) < 100  && Math.abs(y - explosionRadius.y) < 15)   ||
+      (Math.abs(y - explosionRadius.y) < 100 && Math.abs(x - explosionRadius.x) < 15)
+  }
 
-  update(time: number) {
+  isDead(x:number, y:number, explosionRadiuses: Array<ExplotionRadius>) {
+    return (explosionRadiuses !== undefined && explosionRadiuses.length > 0) && explosionRadiuses.some(e => {
+      return this.isInRadius(this.x, this.y, e);
+    })
+  }
+
+
+  update(time: number, explosionRadiuses: Array<ExplotionRadius> ) {
     if (this.cursors.left.isDown) {
       this.x -= 5;
     }
@@ -64,10 +71,9 @@ export class Manbomber extends Phaser.GameObjects.Sprite {
     if (this.cursors.up.isDown) {
       this.y -= 5;
     }
-    // this.bombs.forEach(bomb => {
-    //   bomb.update();
-    // });
-    //this.bombs[0].update(time);
+    if(this.isDead(this.x, this.y, explosionRadiuses)) {
+        console.log('YOU DEAD');
+      }
 
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
       this.tryUseBomb(this.x, this.y);

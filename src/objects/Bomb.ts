@@ -1,3 +1,5 @@
+import { ExplotionRadius } from '../types'
+
 export class Bomb extends Phaser.GameObjects.Sprite {
   time: any;
   exploded:boolean;
@@ -24,15 +26,36 @@ export class Bomb extends Phaser.GameObjects.Sprite {
 
   }
 
+  getExplotionRadius() : ExplotionRadius {
+    if(this.exploded) {
+      return {y: this.y, x:this.x };
+    }
+ 
+  }
+  
+  hasExploded() : boolean {
+    return this.exploded;
+  }
+
+  reset() {
+      this.exploded = false;
+      this.x = -100;
+      this.y = -100;
+  }
+
   explode() {
     console.log('exlode');
     this.exploded=true;
-    this.x = -100;
-    this.y = -100;
+    this.time.addEvent({
+      delay: 500,
+      callback: () => this.reset(),
+      callbackScope: this
+    })
+
+    
   }
 
   update(time: number) {
-
     //her skal manbomber sin shit ligge
 
   }
