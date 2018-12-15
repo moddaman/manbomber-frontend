@@ -1,6 +1,7 @@
 import Network, { ManbomberNameMap } from './Network';
 import { Manbomber } from "../objects/Manbomber";
 import { Fire } from "../objects/Fire";
+import { isOdd, isEven } from "../utils";
 
 class TestScene extends Phaser.Scene {
   private player: Manbomber;
@@ -42,13 +43,7 @@ class TestScene extends Phaser.Scene {
 
   }
 
-  isEven(n) {
-    return n % 2 == 0
-  }
 
-  isOdd(n) {
-    return Math.abs(n % 2) == 1;
-  }
 
   isPlayerStartZone(xCell, yCell) {
     console.log(xCell, yCell);
@@ -89,15 +84,14 @@ class TestScene extends Phaser.Scene {
     var xGrid = 0;
     var yGrid = 0;
 
-    //console.log(numberOfXCells, numberOfYCells);
     for (var j = 0; j <= this.numberOfXCells; j++) {
       for (var i = 0; i <= this.numberOfYCells; i++) {
         if (!this.isPlayerStartZone(j, i)) {
-          if (this.isEven(xGrid) || this.isEven(yGrid)) {
+          if (isEven(xGrid) || isEven(yGrid)) {
             this.boxes.create((j * 32) + 16, (i * 32) + 16, 'green-brick');
             this.boxes.enableBody = true;
           }
-          if (this.isOdd(xGrid) && this.isOdd(yGrid)) {
+          if (isOdd(xGrid) && isOdd(yGrid)) {
             this.squares.create((j * 32) + 16, (i * 32) + 16, 'black-square');
             this.squares.enableBody = true;
           }
