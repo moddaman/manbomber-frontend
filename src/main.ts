@@ -1,8 +1,8 @@
 import 'phaser';
 
 import TestScene from './scenes/PlayScene';
-import {Chat} from './chat';
-import {getUrlParam} from './network/socket';
+import { Chat } from './chat';
+import { getUrlParam } from './network/socket';
 
 new Chat();
 
@@ -16,14 +16,14 @@ if (!player) {
   const config: GameConfig = {
     type: Phaser.AUTO,
     parent: 'content',
-    width: 600,
-    height: 450,
+    width: 672,
+    height: 480,
     resolution: 1,
     backgroundColor: "#0C6991",
     physics: {
       default: 'arcade',
       arcade: {
-        gravity: {y: 0},
+        gravity: { y: 0 },
         debug: false
       }
     },

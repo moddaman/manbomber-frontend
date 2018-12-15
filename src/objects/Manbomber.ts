@@ -1,5 +1,5 @@
-import {Bomb} from "../objects/Bomb";
-import {ExplotionRadius} from '../types'
+import { Bomb } from "../objects/Bomb";
+import { ExplotionRadius } from '../types'
 import Network from "../scenes/Network";
 
 export class Manbomber extends Phaser.Physics.Arcade.Sprite {
@@ -60,7 +60,7 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  
+
   update(time: number) {
     this.setVelocityY(0)
     this.setVelocityX(0)
@@ -75,7 +75,7 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
     }
     if (this.cursors.up.isDown) {
       this.setVelocityY(-150)
-    } 
+    }
 
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
       this.tryUseBomb(this.x, this.y);
