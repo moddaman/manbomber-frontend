@@ -1,14 +1,21 @@
-import Network, {ManbomberNameMap} from './Network';
-import {Manbomber} from "../objects/Manbomber";
-import {Fire} from "../objects/Fire";
+import Network, { ManbomberNameMap } from './Network';
+import { Manbomber } from "../objects/Manbomber";
+import { Fire } from "../objects/Fire";
+import { isOdd, isEven } from "../utils";
 
 class TestScene extends Phaser.Scene {
   private player: Manbomber;
   squares: any;
+  boxes: any;
   bomb: Phaser.GameObjects.Sprite;
   network: Network;
   enemies: ManbomberNameMap;
   bombCounter: number;
+  gameWidth: number = 672; //Bør være mulig å hente dette fra config, men fant det ikke.
+  gameHeight: number = 480;
+  numberOfXCells: number;
+  numberOfYCells: number;
+  cellSize: number = 32; // height and width Square
   private fires: Phaser.GameObjects.Group;
 
   constructor() {
@@ -16,9 +23,11 @@ class TestScene extends Phaser.Scene {
       key: 'TestScene'
     });
 
+    console.log(this.gameWidth, this.cellSize, this.gameWidth / this.cellSize)
+    this.numberOfXCells = this.gameWidth / this.cellSize;
+    this.numberOfYCells = this.gameHeight / this.cellSize;
     this.enemies = {};
     this.network = new Network(this, this.enemies);
-
   }
 
   preload() {
@@ -27,17 +36,40 @@ class TestScene extends Phaser.Scene {
     this.load.image('player_2', '/assets/sprites/player_2.png');
     this.load.image('player_3', '/assets/sprites/player_3.png');
 
+    this.load.image('green-brick', '/assets/sprites/green_brick.png');
     this.load.image('black-square', '/assets/sprites/green-square.png');
     this.load.image('bomb', '/assets/sprites/bomb.png');
     this.load.image('bullet', '/assets/sprites/purple_ball.png');
 
   }
 
+
+
+  isPlayerStartZone(xCell, yCell) {
+    console.log(xCell, yCell);
+    if (xCell == 1) {
+      if (yCell == 1 || (yCell + 2) == this.numberOfYCells) {
+        return false
+      }
+    }
+    if ((xCell + 2) == this.numberOfXCells) {
+      if (yCell == 1 || (yCell + 2) == this.numberOfYCells) {
+        return false
+      }
+    }
+    if (xCell < 2) {
+      return yCell < 2 || (yCell + 2) >= this.numberOfYCells;
+    }
+    if ((xCell + 2) >= this.numberOfXCells) {
+      return yCell < 2 || (yCell + 2) >= this.numberOfYCells;
+    }
+  }
+
   create() {
     this.player = new Manbomber({
       scene: this,
-      x: 100,
-      y: 100,
+      x: 12,
+      y: 12,
       key: "player_0"
     }, this.network);
     this.player.setCollideWorldBounds(true);
@@ -45,19 +77,43 @@ class TestScene extends Phaser.Scene {
     this.fires = this.add.group({
       runChildUpdate: true
     });
-
     this.squares = this.physics.add.staticGroup();
-    for (var i = 50; i < 470; i += 70) {
-      for (var j = 50; j < 610; j += 70) {
-        this.squares.create(j, i, 'black-square');
-        this.squares.enableBody = true;
+    this.boxes = this.physics.add.staticGroup();
+
+
+    var xGrid = 0;
+    var yGrid = 0;
+
+    for (var j = 0; j <= this.numberOfXCells; j++) {
+      for (var i = 0; i <= this.numberOfYCells; i++) {
+        if (!this.isPlayerStartZone(j, i)) {
+          if (isEven(xGrid) || isEven(yGrid)) {
+            this.boxes.create((j * 32) + 16, (i * 32) + 16, 'green-brick');
+            this.boxes.enableBody = true;
+          }
+          if (isOdd(xGrid) && isOdd(yGrid)) {
+            this.squares.create((j * 32) + 16, (i * 32) + 16, 'black-square');
+            this.squares.enableBody = true;
+          }
+        }
+        yGrid += 1;
       }
+      xGrid += 1;
     }
+
+
+    this.physics.add.collider(this.player, this.boxes);
     this.physics.add.collider(this.player, this.squares);
     this.physics.add.collider(this.fires, this.squares, this.killFire);
+    this.physics.add.collider(this.fires, this.boxes, this.killBox);
+
     this.physics.add.overlap(this.player, this.fires, this.killPlayer, null, this);
     this.bombCounter = 0;
+  }
 
+  killBox(fire, box) {
+    box.destroy();
+    fire.destroy();
   }
 
   killFire(fire, square) {
