@@ -68,8 +68,8 @@ class TestScene extends Phaser.Scene {
   create() {
     this.player = new Manbomber({
       scene: this,
-      x: 100,
-      y: 100,
+      x: 12,
+      y: 12,
       key: "player_0"
     }, this.network);
     this.player.setCollideWorldBounds(true);
@@ -102,14 +102,19 @@ class TestScene extends Phaser.Scene {
     }
 
 
-
+    this.physics.add.collider(this.player, this.boxes);
     this.physics.add.collider(this.player, this.squares);
     this.physics.add.collider(this.fires, this.squares, this.killFire);
+    this.physics.add.collider(this.fires, this.boxes, this.killBox);
+
     this.physics.add.overlap(this.player, this.fires, this.killPlayer, null, this);
     this.bombCounter = 0;
   }
 
-
+  killBox(fire, box) {
+    box.destroy();
+    fire.destroy();
+  }
 
   killFire(fire, square) {
     fire.destroy();
