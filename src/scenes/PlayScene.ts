@@ -31,7 +31,8 @@ class TestScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('player_0', '/assets/sprites/Bombah.png');
+    this.load.spritesheet('player_0', '/assets/sprites/Bombah-animated.png', { frameWidth: 22, frameHeight: 30 });
+    //this.load.image('player_0', '/assets/sprites/Bombah.png');
     this.load.image('player_1', '/assets/sprites/player_1.png');
     this.load.image('player_2', '/assets/sprites/player_2.png');
     this.load.image('player_3', '/assets/sprites/player_3.png');
@@ -73,6 +74,32 @@ class TestScene extends Phaser.Scene {
       key: "player_0"
     }, this.network);
     this.player.setCollideWorldBounds(true);
+
+    this.anims.create({
+      key: 'up',
+      frames: this.anims.generateFrameNumbers('player_0', { frames: [0] }),
+      frameRate: 0,
+      repeat: -1
+    });
+    this.anims.create({
+      key: 'down',
+      frames: this.anims.generateFrameNumbers('player_0', { frames: [1] }),
+      frameRate: 0,
+      repeat: -1
+    });
+    this.anims.create({
+      key: 'right',
+      frames: this.anims.generateFrameNumbers('player_0', { frames: [2] }),
+      frameRate: 0,
+      repeat: -1
+    });
+    this.anims.create({
+      key: 'left',
+      frames: this.anims.generateFrameNumbers('player_0', { frames: [3] }),
+      frameRate: 0,
+      repeat: -1
+    });
+
 
     this.fires = this.add.group({
       runChildUpdate: true
@@ -156,8 +183,7 @@ class TestScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number) {
-    this.physics.add.collider(this.player, this.squares); // denne burde fungere, men det gjør den ikke
-    //this.network.update(time, this.player);
+    //this.physics.add.collider(this.player, this.squares); // denne burde fungere, men det gjør den ikke
 
     this.player.update(time);
   }

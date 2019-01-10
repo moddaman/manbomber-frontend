@@ -64,17 +64,26 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
   update(time: number) {
     this.setVelocityY(0)
     this.setVelocityX(0)
+
     if (this.cursors.left.isDown) {
       this.setVelocityX(-150)
+      this.anims.play('left', true);
+
     }
     if (this.cursors.right.isDown) {
       this.setVelocityX(150)
+      this.anims.play('right', true);
+
     }
     if (this.cursors.down.isDown) {
       this.setVelocityY(150)
+      this.anims.play('down', true);
+
     }
     if (this.cursors.up.isDown) {
       this.setVelocityY(-150)
+      this.anims.play('up', true);
+
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
