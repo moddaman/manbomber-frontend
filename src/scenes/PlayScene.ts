@@ -31,7 +31,7 @@ class TestScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('player_0', '/assets/sprites/player_0.png');
+    this.load.image('player_0', '/assets/sprites/Bombah.png');
     this.load.image('player_1', '/assets/sprites/player_1.png');
     this.load.image('player_2', '/assets/sprites/player_2.png');
     this.load.image('player_3', '/assets/sprites/player_3.png');
@@ -46,7 +46,7 @@ class TestScene extends Phaser.Scene {
 
 
   isPlayerStartZone(xCell, yCell) {
-    console.log(xCell, yCell);
+
     if (xCell == 1) {
       if (yCell == 1 || (yCell + 2) == this.numberOfYCells) {
         return false
@@ -157,7 +157,7 @@ class TestScene extends Phaser.Scene {
 
   update(time: number, delta: number) {
     this.physics.add.collider(this.player, this.squares); // denne burde fungere, men det gjør den ikke
-    this.network.update(time, this.player);
+    //this.network.update(time, this.player);
 
     this.player.update(time);
   }
