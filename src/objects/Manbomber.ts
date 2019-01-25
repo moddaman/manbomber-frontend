@@ -42,7 +42,7 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
     this.usedBombs -= 1;
   }
 
-  tryUseBomb(x: any, y: any) {
+  tryUseBomb(x: number, y: number) {
     if (this.usedBombs < this.maxBombs) {
       this.bombs[this.usedBombs].use(x, y, this.explodeTime);
       this.usedBombs += 1;

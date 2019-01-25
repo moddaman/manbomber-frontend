@@ -23,7 +23,6 @@ class TestScene extends Phaser.Scene {
       key: 'TestScene'
     });
 
-    console.log(this.gameWidth, this.cellSize, this.gameWidth / this.cellSize)
     this.numberOfXCells = this.gameWidth / this.cellSize;
     this.numberOfYCells = this.gameHeight / this.cellSize;
     this.enemies = {};
@@ -46,7 +45,7 @@ class TestScene extends Phaser.Scene {
 
 
 
-  isPlayerStartZone(xCell, yCell) {
+  isPlayerStartZone(xCell: number, yCell: number) {
 
     if (xCell == 1) {
       if (yCell == 1 || (yCell + 2) == this.numberOfYCells) {
@@ -107,7 +106,6 @@ class TestScene extends Phaser.Scene {
     this.squares = this.physics.add.staticGroup();
     this.boxes = this.physics.add.staticGroup();
 
-
     var xGrid = 0;
     var yGrid = 0;
 
@@ -133,7 +131,6 @@ class TestScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.squares);
     this.physics.add.collider(this.fires, this.squares, this.killFire);
     this.physics.add.collider(this.fires, this.boxes, this.killBox);
-
     this.physics.add.overlap(this.player, this.fires, this.killPlayer, null, this);
     this.bombCounter = 0;
   }
@@ -154,7 +151,7 @@ class TestScene extends Phaser.Scene {
     console.log('DØD!!!!')
   }
 
-  getFire(x, y, xSpeed, ySpeed) {
+  getFire(x: number, y: number, xSpeed: number, ySpeed: number) {
     return new Fire({
       scene: this,
       x: x,
@@ -167,7 +164,7 @@ class TestScene extends Phaser.Scene {
     })
   }
 
-  public fire(x, y) {
+  public fire(x: number, y: number) {
     this.fires.add(
       this.getFire(x, y, 100, 0),
     );
@@ -182,10 +179,9 @@ class TestScene extends Phaser.Scene {
     );
   }
 
-  update(time: number, delta: number) {
-    //this.physics.add.collider(this.player, this.squares); // denne burde fungere, men det gjør den ikke
-
+  update(time: number) {
     this.player.update(time);
+    this.network.update(time, this.player);
   }
 }
 
