@@ -4,12 +4,12 @@ export interface ExplotionRadius {
 }
 
 
-interface GameState {
+export interface GameState {
   players: PlayerState[]
   tiles: BombType[];
 }
 
-interface PlayerState {
+export interface PlayerState {
   x: number;
   y: number;
   name: string;
@@ -17,10 +17,10 @@ interface PlayerState {
 
 }
 
-interface BombState {
+export interface BombState {
   x: number;
   y: number;
 }
 
-type BombType = 'BLOCK' | 'BOX' | 'EMPTY' | 'SPEED'
+export type BombType = 'BLOCK' | 'BOX' | 'EMPTY' | 'SPEED'
 
