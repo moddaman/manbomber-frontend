@@ -1,0 +1,19 @@
+{
+  "players": [
+    {
+      "id": 1,
+      "name": "Olsen",
+      "x": 1,
+      "y": 2,
+      "bombs": [
+        {
+          "id": "randomgreie",
+          "x": 1,
+          "y": 3,
+          "timeToExplode? or something": "now? TODO"
+        }
+      ]
+    }
+  ],
+  "tiles": [0,0,1] // array, med
+}
