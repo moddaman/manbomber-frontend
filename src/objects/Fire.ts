@@ -8,9 +8,10 @@ export class Fire extends Phaser.GameObjects.Image {
     this.currentScene = params.scene;
     this.initImage();
     this.currentScene.physics.world.enable(this);
-    this.body.setVelocityY(params.fireProperties.ySpeed);
-    this.body.setVelocityX(params.fireProperties.xSpeed);
-    this.body.setSize(1, 8);
+    const x = <Phaser.Physics.Arcade.Body>this.body
+    x.setVelocityY(params.fireProperties.ySpeed);
+    x.setVelocityX(params.fireProperties.xSpeed);
+    x.setSize(1, 8);
 
 
     this.currentScene.add.existing(this);

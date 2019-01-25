@@ -1,7 +1,29 @@
 import Network, { ManbomberNameMap } from './Network';
 import { Manbomber } from "../objects/Manbomber";
 import { Fire } from "../objects/Fire";
+import { Cell } from "../objects/Cell";
 import { isOdd, isEven } from "../utils";
+
+
+
+class Grid {
+  private grid: Array<Cell> = [];
+  private numberOfColumns: number = 3;
+
+  constructor() {
+    for (var j = 0; j < 9; j++) {
+      this.grid.push(new Cell(j, j));
+    }
+  }
+
+  getCell(row: number, column: number) {
+
+    console.log(this.grid);
+    return this.grid[(row * this.numberOfColumns) + column];
+  }
+
+}
+
 
 class TestScene extends Phaser.Scene {
   private player: Manbomber;
@@ -23,6 +45,7 @@ class TestScene extends Phaser.Scene {
       key: 'TestScene'
     });
 
+    console.log(this.gameWidth, this.cellSize, this.gameWidth / this.cellSize)
     this.numberOfXCells = this.gameWidth / this.cellSize;
     this.numberOfYCells = this.gameHeight / this.cellSize;
     this.enemies = {};
@@ -45,7 +68,7 @@ class TestScene extends Phaser.Scene {
 
 
 
-  isPlayerStartZone(xCell: number, yCell: number) {
+  isPlayerStartZone(xCell, yCell) {
 
     if (xCell == 1) {
       if (yCell == 1 || (yCell + 2) == this.numberOfYCells) {
@@ -106,8 +129,13 @@ class TestScene extends Phaser.Scene {
     this.squares = this.physics.add.staticGroup();
     this.boxes = this.physics.add.staticGroup();
 
+
     var xGrid = 0;
     var yGrid = 0;
+
+    var g = new Grid();
+
+    console.log(g.getCell(2, 2));
 
     for (var j = 0; j <= this.numberOfXCells; j++) {
       for (var i = 0; i <= this.numberOfYCells; i++) {
@@ -131,6 +159,7 @@ class TestScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.squares);
     this.physics.add.collider(this.fires, this.squares, this.killFire);
     this.physics.add.collider(this.fires, this.boxes, this.killBox);
+
     this.physics.add.overlap(this.player, this.fires, this.killPlayer, null, this);
     this.bombCounter = 0;
   }
@@ -151,7 +180,7 @@ class TestScene extends Phaser.Scene {
     console.log('DØD!!!!')
   }
 
-  getFire(x: number, y: number, xSpeed: number, ySpeed: number) {
+  getFire(x, y, xSpeed, ySpeed) {
     return new Fire({
       scene: this,
       x: x,
@@ -164,7 +193,7 @@ class TestScene extends Phaser.Scene {
     })
   }
 
-  public fire(x: number, y: number) {
+  public fire(x, y) {
     this.fires.add(
       this.getFire(x, y, 100, 0),
     );
@@ -179,9 +208,12 @@ class TestScene extends Phaser.Scene {
     );
   }
 
-  update(time: number) {
-    this.player.update(time);
+  update(time: number, delta: number) {
+    //this.physics.add.collider(this.player, this.squares); // denne burde fungere, men det gjør den ikke
+
     this.network.update(time, this.player);
+    // const fromNetwork = this.network.Poll();
+    this.player.update(time);
   }
 }
 

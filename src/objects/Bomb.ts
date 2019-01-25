@@ -1,10 +1,10 @@
-import {ExplotionRadius} from '../types'
+import { ExplotionRadius } from '../types'
 import Scene = Phaser.Scene;
 
 
 export class Bomb extends Phaser.GameObjects.Sprite {
   time: any;
-  exploded:boolean;
+  exploded: boolean;
   private currentScene: Phaser.Scene;
 
 
@@ -14,7 +14,7 @@ export class Bomb extends Phaser.GameObjects.Sprite {
     this.currentScene = params.scene;
     params.scene.add.existing(this);
     this.time = params.scene.time;
-  
+
   }
 
 
@@ -30,7 +30,7 @@ export class Bomb extends Phaser.GameObjects.Sprite {
 
   getExplotionRadius(): ExplotionRadius {
     if (this.exploded) {
-      return {y: this.y, x: this.x};
+      return { y: this.y, x: this.x };
     }
 
   }
@@ -47,7 +47,7 @@ export class Bomb extends Phaser.GameObjects.Sprite {
 
   explode() {
     console.log('exlode');
-    this.exploded=true;
+    this.exploded = true;
     this.currentScene.fire(this.x, this.y);
     this.time.addEvent({
       delay: 500,
@@ -63,4 +63,3 @@ export class Bomb extends Phaser.GameObjects.Sprite {
 
   }
 }
-
