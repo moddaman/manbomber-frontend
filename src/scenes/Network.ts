@@ -1,6 +1,7 @@
 import {BOMB_UPDATE_KEY, getUrlParam, PLAYER_UPDATE_KEY, socket} from '../network/socket';
 import {Manbomber} from "../objects/Manbomber";
 import Scene = Phaser.Scene;
+import {GameState} from "../types";
 
 
 interface NetworkMsgPlay {
@@ -24,6 +25,7 @@ const randomName = () => {
   return 'oystein' + Math.round(Math.random() * 100);
 };
 
+const SOCKET_GAME_STATE_KEY = 'game_state';
 
 export interface ManbomberNameMap {
   [name: string]: Manbomber
@@ -33,8 +35,8 @@ class Network {
   networkCount: number;
   lastPlayerMsg: NetworkMsgPlay;
   enemiesMap: ManbomberNameMap;
-
   scene: Scene;
+  gameState:GameState;
 
   constructor(scene: Scene, enemiesMap: ManbomberNameMap) {
     this.scene = scene;
@@ -44,6 +46,16 @@ class Network {
     });
     socket.on(BOMB_UPDATE_KEY, (data) => {
       this.onBombUpdate(data);
+    });
+
+    console.log('hører på game state opdpateringeng');
+    socket.on(SOCKET_GAME_STATE_KEY, (data:GameState) => {
+      this.gameState = data;
+      console.log('--- Game State ----');
+      console.log('Players');
+      console.table(data.players);
+      console.log('Tiles');
+      console.log(data.tiles)
     });
 
     this.networkCount = 0;

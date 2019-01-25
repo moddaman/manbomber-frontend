@@ -10,7 +10,6 @@ export interface GameState {
 }
 
 export interface PlayerState {
-  id: number;
   x: number;
   y: number;
   name: string;

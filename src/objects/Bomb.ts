@@ -48,7 +48,8 @@ export class Bomb extends Phaser.GameObjects.Sprite {
   explode() {
     console.log('exlode');
     this.exploded = true;
-    this.currentScene.fire(this.x, this.y);
+    let currentScene = <any>this.currentScene;
+    currentScene.fire(this.x, this.y);
     this.time.addEvent({
       delay: 500,
       callback: () => this.reset(),
