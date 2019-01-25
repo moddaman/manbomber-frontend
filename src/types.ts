@@ -10,10 +10,12 @@ export interface GameState {
 }
 
 export interface PlayerState {
+  id: string;
   x: number;
   y: number;
   name: string;
   bombs: BombState[];
+  occupied: boolean;
 
 }
 

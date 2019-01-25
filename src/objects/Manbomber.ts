@@ -14,8 +14,10 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
   network?: Network;
   lastX: number;
   lastY: number;
+  username: string;
+  id: string;
 
-  constructor(params, network?: Network) {
+  constructor(params, id: string, network?: Network) {
     super(params.scene, params.x, params.y, params.key, params.frame);
     params.scene.physics.world.enable(this);
     this.cursors = params.scene.input.keyboard.createCursorKeys();
@@ -25,6 +27,7 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
     this.network = network;
     this.lastX = params.x;
     this.lastY = params.y;
+    this.id = id;
 
     params.scene.add.existing(this);
 
@@ -39,6 +42,14 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
     }
 
 
+  }
+
+  setId(id: string) {
+    this.id = id;
+  }
+
+  getId() {
+    return this.id;
   }
 
   getNewBomb() {
@@ -64,56 +75,57 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
-  updateBeta(player: PlayerState) {
+  updateBeta(player: PlayerState, index: number) {
     this.setVelocityY(0)
     this.setVelocityX(0)
 
     if (player.x < this.lastX) {
       this.setVelocityX(-150)
-      this.anims.play('left', true);
+      this.anims.play(`${index}_left`, true);
 
     }
     if (player.x > this.lastX) {
       this.setVelocityX(150)
-      this.anims.play('right', true);
+      this.anims.play(`${index}_right`, true);
 
     }
     if (player.y > this.y) {
       this.setVelocityY(150)
-      this.anims.play('down', true);
+      this.anims.play(`${index}_down`, true);
 
     }
     if (player.y < this.y) {
       this.setVelocityY(-150)
-      this.anims.play('up', true);
+      this.anims.play(`${index}_up`, true);
 
     }
     // if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
     //   this.tryUseBomb(this.x, this.y);
     // }
   }
-  update(time: number) {
+  update(time: number, index: number) {
+    console.log('dsadsølsadølsadsa');
+
     this.setVelocityY(0)
     this.setVelocityX(0)
-
     if (this.cursors.left.isDown) {
       this.setVelocityX(-150)
-      this.anims.play('left', true);
+      this.anims.play(`${index}_left`, true);
 
     }
     if (this.cursors.right.isDown) {
       this.setVelocityX(150)
-      this.anims.play('right', true);
+      this.anims.play(`${index}_right`, true);
 
     }
     if (this.cursors.down.isDown) {
       this.setVelocityY(150)
-      this.anims.play('down', true);
+      this.anims.play(`${index}_down`, true);
 
     }
     if (this.cursors.up.isDown) {
       this.setVelocityY(-150)
-      this.anims.play('up', true);
+      this.anims.play(`${index}_up`, true);
 
     }
 

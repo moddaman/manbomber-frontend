@@ -1,7 +1,7 @@
-import {BOMB_UPDATE_KEY, getUrlParam, PLAYER_UPDATE_KEY, socket} from '../network/socket';
-import {Manbomber} from "../objects/Manbomber";
+import { BOMB_UPDATE_KEY, getUrlParam, PLAYER_UPDATE_KEY, socket } from '../network/socket';
+import { Manbomber } from "../objects/Manbomber";
 import Scene = Phaser.Scene;
-import {GameState} from "../types";
+import { GameState } from "../types";
 
 
 interface NetworkMsgPlay {
@@ -36,20 +36,23 @@ class Network {
   lastPlayerMsg: NetworkMsgPlay;
   enemiesMap: ManbomberNameMap;
   scene: Scene;
-  gameState:GameState;
+  gameState: GameState;
+  socketId: any;
 
   constructor(scene: Scene, enemiesMap: ManbomberNameMap) {
     this.scene = scene;
     this.enemiesMap = enemiesMap;
+    this.gameState = { players: [], tiles: [] }
     socket.on(PLAYER_UPDATE_KEY, (data) => {
       this.onPlayersUpdate(data);
     });
     socket.on(BOMB_UPDATE_KEY, (data) => {
       this.onBombUpdate(data);
     });
+    this.socketId = socket.id;
 
     console.log('hører på game state opdpateringeng');
-    socket.on(SOCKET_GAME_STATE_KEY, (data:GameState) => {
+    socket.on(SOCKET_GAME_STATE_KEY, (data: GameState) => {
       this.gameState = data;
       console.log('--- Game State ----');
       console.log('Players');
@@ -115,7 +118,7 @@ class Network {
   }
 
   sendDroppedBomb(x: number, y: number) {
-    const msg: NetworkMsgBomb = {x, y, name: this.lastPlayerMsg.name};
+    const msg: NetworkMsgBomb = { x, y, name: this.lastPlayerMsg.name };
     socket.emit(BOMB_UPDATE_KEY, msg)
   }
 

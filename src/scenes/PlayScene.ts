@@ -3,6 +3,7 @@ import { Manbomber } from "../objects/Manbomber";
 import { Fire } from "../objects/Fire";
 import { Cell } from "../objects/Cell";
 import { isOdd, isEven } from "../utils";
+import { PlayerState } from '../types';
 
 
 
@@ -28,7 +29,9 @@ class Grid {
 class TestScene extends Phaser.Scene {
   private player: Manbomber;
   private player2: Manbomber;
+  private playas: Array<Manbomber>;
 
+  id: string;
   squares: any;
   boxes: any;
   bomb: Phaser.GameObjects.Sprite;
@@ -42,11 +45,12 @@ class TestScene extends Phaser.Scene {
   cellSize: number = 32; // height and width Square
   private fires: Phaser.GameObjects.Group;
 
+
   constructor() {
     super({
       key: 'TestScene'
     });
-
+    this.playas = [];
     console.log(this.gameWidth, this.cellSize, this.gameWidth / this.cellSize)
     this.numberOfXCells = this.gameWidth / this.cellSize;
     this.numberOfYCells = this.gameHeight / this.cellSize;
@@ -56,10 +60,9 @@ class TestScene extends Phaser.Scene {
 
   preload() {
     this.load.spritesheet('player_0', '/assets/sprites/Bombah-animated.png', { frameWidth: 22, frameHeight: 30 });
-    //this.load.image('player_0', '/assets/sprites/Bombah.png');
-    this.load.image('player_1', '/assets/sprites/player_1.png');
-    this.load.image('player_2', '/assets/sprites/player_2.png');
-    this.load.image('player_3', '/assets/sprites/player_3.png');
+    this.load.spritesheet('player_1', '/assets/sprites/Bombah-animated.png', { frameWidth: 22, frameHeight: 30 });
+    this.load.spritesheet('player_2', '/assets/sprites/Bombah-animated.png', { frameWidth: 22, frameHeight: 30 });
+    this.load.spritesheet('player_3', '/assets/sprites/Bombah-animated.png', { frameWidth: 22, frameHeight: 30 });
 
     this.load.image('green-brick', '/assets/sprites/green_brick.png');
     this.load.image('black-square', '/assets/sprites/green-square.png');
@@ -90,45 +93,37 @@ class TestScene extends Phaser.Scene {
     }
   }
 
-  setupPlayer(x: number, y: number, spriteName: string): Manbomber {
-    const p = new Manbomber({
-      scene: this,
-      x: 12,
-      y: 12,
-      key: "player_0"
-    }, this.network);
-  }
 
-  setupAnimation(spriteName: string) {
+
+  setupAnimation(id: string) {
 
     this.anims.create({
-      key: 'up',
-      frames: this.anims.generateFrameNumbers('player_0', { frames: [0] }),
+      key: `${id}_up`,
+      frames: this.anims.generateFrameNumbers(`player_${id}`, { frames: [0] }),
       frameRate: 0,
       repeat: -1
     });
     this.anims.create({
-      key: 'down',
-      frames: this.anims.generateFrameNumbers('player_0', { frames: [1] }),
+      key: `${id}_down`,
+      frames: this.anims.generateFrameNumbers(`player_${id}`, { frames: [1] }),
       frameRate: 0,
       repeat: -1
     });
     this.anims.create({
-      key: 'right',
-      frames: this.anims.generateFrameNumbers('player_0', { frames: [2] }),
+      key: `${id}_right`,
+      frames: this.anims.generateFrameNumbers(`player_${id}`, { frames: [2] }),
       frameRate: 0,
       repeat: -1
     });
     this.anims.create({
-      key: 'left',
-      frames: this.anims.generateFrameNumbers('player_0', { frames: [3] }),
+      key: `${id}_left`,
+      frames: this.anims.generateFrameNumbers(`player_${id}`, { frames: [3] }),
       frameRate: 0,
       repeat: -1
     });
   }
 
   create() {
-
 
 
     this.fires = this.add.group({
@@ -162,35 +157,12 @@ class TestScene extends Phaser.Scene {
       xGrid += 1;
     }
 
-    this.player = new Manbomber({
-      scene: this,
-      x: 12,
-      y: 12,
-      key: "player_0"
-    }, this.network);
-    this.player.setCollideWorldBounds(true);
-    this.setupAnimation('player_0')
-    this.physics.add.collider(this.player, this.boxes);
-    this.physics.add.collider(this.player, this.squares);
-
-    this.player2 = new Manbomber({
-      scene: this,
-      x: 20,
-      y: 12,
-      key: "player_0"
-    }, this.network);
-    this.player2.setCollideWorldBounds(true);
-    this.setupAnimation('player_0')
-    this.physics.add.collider(this.player2, this.boxes);
-    this.physics.add.collider(this.player2, this.squares);
-
-
 
     this.physics.add.collider(this.fires, this.squares, this.killFire);
     this.physics.add.collider(this.fires, this.boxes, this.killBox);
 
-    this.physics.add.overlap(this.player, this.fires, this.killPlayer, null, this);
     this.bombCounter = 0;
+
   }
 
   killBox(fire, box) {
@@ -237,15 +209,48 @@ class TestScene extends Phaser.Scene {
     );
   }
 
+
+  createPlayer(p: PlayerState) {
+    const player = new Manbomber({
+      scene: this,
+      x: 12,
+      y: 12,
+      key: "player_0"
+    }, p.id, this.network);
+    player.setCollideWorldBounds(true);
+    this.setupAnimation(p.id)
+    this.physics.add.collider(player, this.boxes);
+    this.physics.add.collider(player, this.squares);
+    this.physics.add.overlap(player, this.fires, this.killPlayer, null, this);
+    this.playas.push(player);
+  }
+
+  mPlayer(myId: string): Manbomber {
+    return this.playas.find(p => p.id == myId);
+  }
+
   update(time: number, delta: number) {
     //this.physics.add.collider(this.player, this.squares); // denne burde fungere, men det gjør den ikke
+    //Finn ut hvilken spiller klienten er
+    const myId = this.network.socketId;
 
-    this.network.update(time, this.player);
-    const game = null;//this.network.poll();
-    // const fromNetwork = this.network.Poll();
-    this.player.update(time);
-    this.player2.updateBeta(game.players[1]);
-  }
+
+    const game = this.network.gameState;
+    const myPlayer = this.mPlayer(myId);
+    if (!myPlayer && game.players.length < 3) { //sjekk også om socket id ikke finnes
+      this.createPlayer(game.players[game.players.length - 1])
+    }
+    if (myPlayer) {
+      myPlayer.update(time, 0);
+      this.network.update(time, myPlayer);
+    }
+
+    if (game.players[1]) {
+      this.player2.updateBeta(game.players[1], 1);
+    }
+  };
+
+
 }
 
 export default TestScene;
