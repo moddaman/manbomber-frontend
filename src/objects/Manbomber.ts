@@ -1,5 +1,5 @@
 import { Bomb } from "../objects/Bomb";
-import { ExplotionRadius } from '../types'
+import { ExplotionRadius, PlayerState, BombState } from '../types'
 import Network from "../scenes/Network";
 
 export class Manbomber extends Phaser.Physics.Arcade.Sprite {
@@ -12,6 +12,8 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
   bombCounter: number;
   time: any;
   network?: Network;
+  lastX: number;
+  lastY: number;
 
   constructor(params, network?: Network) {
     super(params.scene, params.x, params.y, params.key, params.frame);
@@ -21,6 +23,8 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
     this.bombCounter = 0;
     this.time = params.scene.time;
     this.network = network;
+    this.lastX = params.x;
+    this.lastY = params.y;
 
     params.scene.add.existing(this);
 
@@ -60,7 +64,34 @@ export class Manbomber extends Phaser.Physics.Arcade.Sprite {
     }
   }
 
+  updateBeta(player: PlayerState) {
+    this.setVelocityY(0)
+    this.setVelocityX(0)
 
+    if (player.x < this.lastX) {
+      this.setVelocityX(-150)
+      this.anims.play('left', true);
+
+    }
+    if (player.x > this.lastX) {
+      this.setVelocityX(150)
+      this.anims.play('right', true);
+
+    }
+    if (player.y > this.y) {
+      this.setVelocityY(150)
+      this.anims.play('down', true);
+
+    }
+    if (player.y < this.y) {
+      this.setVelocityY(-150)
+      this.anims.play('up', true);
+
+    }
+    // if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+    //   this.tryUseBomb(this.x, this.y);
+    // }
+  }
   update(time: number) {
     this.setVelocityY(0)
     this.setVelocityX(0)

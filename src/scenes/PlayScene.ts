@@ -27,6 +27,8 @@ class Grid {
 
 class TestScene extends Phaser.Scene {
   private player: Manbomber;
+  private player2: Manbomber;
+
   squares: any;
   boxes: any;
   bomb: Phaser.GameObjects.Sprite;
@@ -88,14 +90,16 @@ class TestScene extends Phaser.Scene {
     }
   }
 
-  create() {
-    this.player = new Manbomber({
+  setupPlayer(x: number, y: number, spriteName: string): Manbomber {
+    const p = new Manbomber({
       scene: this,
       x: 12,
       y: 12,
       key: "player_0"
     }, this.network);
-    this.player.setCollideWorldBounds(true);
+  }
+
+  setupAnimation(spriteName: string) {
 
     this.anims.create({
       key: 'up',
@@ -121,6 +125,10 @@ class TestScene extends Phaser.Scene {
       frameRate: 0,
       repeat: -1
     });
+  }
+
+  create() {
+
 
 
     this.fires = this.add.group({
@@ -154,9 +162,30 @@ class TestScene extends Phaser.Scene {
       xGrid += 1;
     }
 
-
+    this.player = new Manbomber({
+      scene: this,
+      x: 12,
+      y: 12,
+      key: "player_0"
+    }, this.network);
+    this.player.setCollideWorldBounds(true);
+    this.setupAnimation('player_0')
     this.physics.add.collider(this.player, this.boxes);
     this.physics.add.collider(this.player, this.squares);
+
+    this.player2 = new Manbomber({
+      scene: this,
+      x: 20,
+      y: 12,
+      key: "player_0"
+    }, this.network);
+    this.player2.setCollideWorldBounds(true);
+    this.setupAnimation('player_0')
+    this.physics.add.collider(this.player2, this.boxes);
+    this.physics.add.collider(this.player2, this.squares);
+
+
+
     this.physics.add.collider(this.fires, this.squares, this.killFire);
     this.physics.add.collider(this.fires, this.boxes, this.killBox);
 
@@ -212,8 +241,10 @@ class TestScene extends Phaser.Scene {
     //this.physics.add.collider(this.player, this.squares); // denne burde fungere, men det gjør den ikke
 
     this.network.update(time, this.player);
+    const game = null;//this.network.poll();
     // const fromNetwork = this.network.Poll();
     this.player.update(time);
+    this.player2.updateBeta(game.players[1]);
   }
 }
 
